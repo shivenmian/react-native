@@ -12,6 +12,8 @@ import type {
   LayoutEvent,
   MouseEvent,
   PressEvent,
+  BlurEvent,
+  FocusEvent,
 } from '../../Types/CoreEventTypes';
 import type {
   AccessibilityActionEvent,
@@ -158,6 +160,16 @@ type Props = $ReadOnly<{|
   onPressOut?: ?(event: PressEvent) => mixed,
 
   /**
+   * Called after the element loses focus.
+   */
+  onBlur?: ?(event: BlurEvent) => mixed,
+
+  /**
+   * Called after the element is focused.
+   */
+  onFocus?: ?(event: FocusEvent) => mixed,
+
+  /**
    * Either view styles or a function that receives a boolean reflecting whether
    * the component is currently pressed and returns view styles.
    */
@@ -227,6 +239,8 @@ function Pressable(props: Props, forwardedRef): React.Node {
     onPress,
     onPressIn,
     onPressOut,
+    onBlur,
+    onFocus,
     pressRetentionOffset,
     style,
     testOnly_pressed,
@@ -311,6 +325,8 @@ function Pressable(props: Props, forwardedRef): React.Node {
           onPressOut(event);
         }
       },
+      onBlur,
+      onFocus,
     }),
     [
       android_disableSound,
@@ -327,6 +343,8 @@ function Pressable(props: Props, forwardedRef): React.Node {
       onPress,
       onPressIn,
       onPressOut,
+      onBlur,
+      onFocus,
       pressRetentionOffset,
       setPressed,
       unstable_pressDelay,

@@ -27,6 +27,12 @@ const bubblingEventTypes = {
       bubbled: 'onSelect',
     },
   },
+  topOnFocusChange: {
+    phasedRegistrationNames: {
+      bubbled: 'onFocusChange',
+      captured: 'onFocusChangeCapture',
+    },
+  },
   topTouchEnd: {
     phasedRegistrationNames: {
       captured: 'onTouchEndCapture',

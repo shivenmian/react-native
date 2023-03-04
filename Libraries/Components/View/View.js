@@ -9,12 +9,16 @@
  */
 
 import type {ViewProps} from './ViewPropTypes';
-
+import type {BlurEvent, FocusEvent} from '../../Types/CoreEventTypes'
 import flattenStyle from '../../StyleSheet/flattenStyle';
 import TextAncestor from '../../Text/TextAncestor';
 import {getAccessibilityRoleFromRole} from '../../Utilities/AcessibilityMapping';
 import ViewNativeComponent from './ViewNativeComponent';
 import * as React from 'react';
+const TextInputState = require('../TextInput/TextInputState');
+import type {HostComponent} from '../../Renderer/shims/ReactNativeTypes';
+const setAndForwardRef = require('../../Utilities/setAndForwardRef');
+const {useRef} = React;
 
 export type Props = ViewProps;
 
@@ -103,6 +107,29 @@ const View: React.AbstractComponent<
 
     const newPointerEvents = style?.pointerEvents || pointerEvents;
 
+    const viewRef = useRef<null | React.ElementRef<HostComponent<mixed>>>(null);
+
+    const _setNativeRef = setAndForwardRef({
+      getForwardedRef: () => forwardedRef,
+      setLocalRef: ref => {
+        viewRef.current = ref;
+      },
+    });
+  
+    const _onBlur = (event: BlurEvent) => {
+      TextInputState.blurInput(viewRef.current);
+      if (props.onBlur) {
+        props.onBlur(event);
+      }
+    };
+  
+    const _onFocus = (event: FocusEvent) => {
+      TextInputState.focusInput(viewRef.current);
+      if (props.onFocus) {
+        props.onFocus(event);
+      }
+    };
+
     return (
       <TextAncestor.Provider value={false}>
         <ViewNativeComponent
@@ -126,10 +153,12 @@ const View: React.AbstractComponent<
               ? 'no-hide-descendants'
               : importantForAccessibility
           }
+          onBlur={_onBlur}
+          onFocus={_onFocus}
+          ref={_setNativeRef}
           nativeID={id ?? nativeID}
           style={style}
           pointerEvents={newPointerEvents}
-          ref={forwardedRef}
         />
       </TextAncestor.Provider>
     );

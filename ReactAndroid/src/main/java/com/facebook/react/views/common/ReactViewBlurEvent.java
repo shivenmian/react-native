@@ -5,24 +5,24 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-package com.facebook.react.views.textinput;
+package com.facebook.react.views.common;
 
 import androidx.annotation.Nullable;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.events.Event;
 
-/** Event emitted by EditText native view when it receives focus. */
-/* package */ class ReactTextInputFocusEvent extends Event<ReactTextInputFocusEvent> {
+/** Event emitted by a native view when it loses focus. */
+public class ReactViewBlurEvent extends Event<ReactViewBlurEvent> {
 
-  private static final String EVENT_NAME = "topFocus";
+  private static final String EVENT_NAME = "topBlur";
 
   @Deprecated
-  public ReactTextInputFocusEvent(int viewId) {
+  public ReactViewBlurEvent(int viewId) {
     this(-1, viewId);
   }
 
-  public ReactTextInputFocusEvent(int surfaceId, int viewId) {
+  public ReactViewBlurEvent(int surfaceId, int viewId) {
     super(surfaceId, viewId);
   }
 
@@ -31,16 +31,16 @@ import com.facebook.react.uimanager.events.Event;
     return EVENT_NAME;
   }
 
+  @Override
+  public boolean canCoalesce() {
+    return false;
+  }
+
   @Nullable
   @Override
   protected WritableMap getEventData() {
     WritableMap eventData = Arguments.createMap();
     eventData.putInt("target", getViewTag());
     return eventData;
-  }
-
-  @Override
-  public boolean canCoalesce() {
-    return false;
   }
 }
